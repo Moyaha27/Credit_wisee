@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moyahasetupfuture – Student Finance Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root {
+    --aqua: #00E5FF;
+    --aqua-dark: #00B8D9;
+    --aqua-glow: #00E5FF44;
+    --aqua-soft: #00E5FF18;
+    --black: #080C10;
+    --dark: #0D1117;
+    --panel: #111820;
+    --panel2: #161E28;
+    --border: #00E5FF22;
+    --text: #E8F4F8;
+    --muted: #7A9BAA;
+    --white: #ffffff;
+    --error: #FF4466;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--text); font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--aqua); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(8,12,16,0.88); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 68px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .logo-m {
+    width: 44px; height: 44px; background: var(--aqua); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--black);
+    box-shadow: 0 0 18px var(--aqua-glow); flex-shrink: 0; position: relative; overflow: hidden;
+  }
+  .logo-m::after {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
+  .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); line-height: 1; letter-spacing: 1px; }
+  .logo-text span { display: block; font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 500; color: var(--aqua); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
+  .nav-links { display: flex; gap: 6px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; transition: all 0.25s; letter-spacing: 0.5px; }
+  .nav-links a:hover { color: var(--aqua); background: var(--aqua-soft); }
+  .nav-cta { background: var(--aqua) !important; color: var(--black) !important; font-weight: 700 !important; box-shadow: 0 0 16px var(--aqua-glow); }
+  .nav-cta:hover { background: var(--aqua-dark) !important; transform: translateY(-1px); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; }
+  .hamburger span { width: 24px; height: 2px; background: var(--aqua); border-radius: 2px; transition: all 0.3s; }
+  .mobile-menu {
+    display: none; position: fixed; top: 68px; left: 0; right: 0;
+    background: rgba(8,12,16,0.97); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); padding: 20px 5%; z-index: 999; flex-direction: column; gap: 4px;
+  }
+  .mobile-menu a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; padding: 12px 16px; border-radius: 10px; transition: all 0.2s; display: block; }
+  .mobile-menu a:hover { color: var(--aqua); background: var(--aqua-soft); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 5% 60px; position: relative; overflow: hidden; }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 70% 50%, #00E5FF0A 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, #00B8D908 0%, transparent 60%),
+      linear-gradient(180deg, #080C10 0%, #0D1117 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 680px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--aqua-soft); border: 1px solid var(--aqua-dark); color: var(--aqua);
+    font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 100px;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;
+    animation: fadeSlideUp 0.6s ease both;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--aqua); border-radius: 50%; box-shadow: 0 0 6px var(--aqua); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 8vw, 96px); line-height: 0.95; color: var(--white); margin-bottom: 16px; animation: fadeSlideUp 0.7s ease 0.1s both; }
+  .hero h1 span { color: var(--aqua); text-shadow: 0 0 30px var(--aqua-glow); }
+  .hero p { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 520px; margin-bottom: 36px; font-weight: 300; animation: fadeSlideUp 0.7s ease 0.2s both; }
+  .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeSlideUp 0.7s ease 0.3s both; }
+  .btn-primary { background: var(--aqua); color: var(--black); font-weight: 700; font-size: 14px; padding: 14px 32px; border-radius: 10px; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; box-shadow: 0 0 24px var(--aqua-glow); letter-spacing: 0.5px; }
+  .btn-primary:hover { background: var(--aqua-dark); transform: translateY(-2px); box-shadow: 0 4px 32px var(--aqua-glow); }
+  .btn-outline { background: transparent; color: var(--aqua); font-weight: 600; font-size: 14px; padding: 14px 32px; border-radius: 10px; border: 1px solid var(--aqua-dark); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; letter-spacing: 0.5px; }
+  .btn-outline:hover { background: var(--aqua-soft); transform: translateY(-2px); }
+  .hero-stats { display: flex; gap: 48px; margin-top: 56px; padding-top: 36px; border-top: 1px solid var(--border); animation: fadeSlideUp 0.7s ease 0.4s both; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--aqua); line-height: 1; text-shadow: 0 0 20px var(--aqua-glow); }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+  .hero-visual { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 420px; animation: fadeSlideUp 0.8s ease 0.3s both; }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .float-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 24px; backdrop-filter: blur(10px); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--border); }
+  .float-card-title { font-size: 11px; font-weight: 600; color: var(--aqua); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .mini-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .mini-bar-label { font-size: 12px; color: var(--muted); width: 80px; }
+  .bar-track { flex: 1; height: 6px; background: var(--panel2); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--aqua-dark), var(--aqua)); border-radius: 3px; animation: barGrow 1.5s ease 0.8s both; }
+  @keyframes barGrow { from { width: 0 !important; } to { } }
+  .mini-bar-val { font-size: 12px; color: var(--text); font-weight: 600; font-family: 'Space Mono', monospace; }
+
+  /* SECTIONS */
+  section { padding: 90px 5%; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--aqua); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+  .section-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 5vw, 58px); color: var(--white); line-height: 1; margin-bottom: 14px; }
+  .section-header p { font-size: 16px; color: var(--muted); max-width: 500px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+
+  /* SERVICES */
+  #services { background: var(--dark); }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .service-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 32px 28px; transition: all 0.35s; cursor: pointer; position: relative; overflow: hidden; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--aqua-dark), var(--aqua)); transform: scaleX(0); transform-origin: left; transition: transform 0.35s; }
+  .service-card:hover { border-color: var(--aqua-dark); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,229,255,0.08); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-icon { width: 52px; height: 52px; background: var(--aqua-soft); border: 1px solid var(--aqua-dark); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+  .service-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--white); margin-bottom: 10px; letter-spacing: 1px; }
+  .service-card p { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; margin-bottom: 20px; }
+  .service-link { font-size: 13px; font-weight: 600; color: var(--aqua); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: gap 0.2s; }
+  .service-link:hover { gap: 10px; }
+
+  /* CALCULATOR */
+  #calculator { background: var(--black); }
+  .calc-wrap { max-width: 820px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.4); }
+  .calc-header { background: linear-gradient(135deg, #0D1117 0%, #111820 100%); border-bottom: 1px solid var(--border); padding: 28px 36px; display: flex; align-items: center; gap: 14px; }
+  .calc-header-icon { width: 46px; height: 46px; background: var(--aqua); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--black); box-shadow: 0 0 16px var(--aqua-glow); }
+  .calc-header-text h3 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--white); letter-spacing: 1px; }
+  .calc-header-text p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .calc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .calc-inputs { padding: 36px; border-right: 1px solid var(--border); }
+  .form-group { margin-bottom: 24px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--aqua); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .form-input { width: 100%; background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; transition: border-color 0.2s; outline: none; }
+  .form-input:focus { border-color: var(--aqua); box-shadow: 0 0 0 3px var(--aqua-soft); }
+  .form-input.error { border-color: var(--error) !important; }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--panel2); border-radius: 3px; outline: none; margin-top: 8px; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--aqua); border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--aqua-glow); transition: transform 0.2s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .range-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .range-labels span { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .calc-result { padding: 36px; }
+  .result-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; text-align: center; }
+  .result-main { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: var(--aqua); text-shadow: 0 0 24px var(--aqua-glow); line-height: 1; }
+  .result-label { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .result-row:last-child { border-bottom: none; }
+  .result-row-label { font-size: 13px; color: var(--muted); }
+  .result-row-val { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--text); font-weight: 700; }
+  .calc-btn { width: 100%; background: var(--aqua); color: var(--black); font-weight: 700; font-size: 14px; padding: 15px; border-radius: 10px; border: none; cursor: pointer; margin-top: 20px; transition: all 0.25s; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 20px var(--aqua-glow); font-family: 'Poppins', sans-serif; }
+  .calc-btn:hover { background: var(--aqua-dark); transform: translateY(-2px); }
+
+  /* CREDIT */
+  #credit { background: var(--dark); }
+  .credit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
+  .credit-visual { display: flex; flex-direction: column; gap: 16px; }
+  .score-meter { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 32px; text-align: center; }
+  .score-circle-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; }
+  .score-circle-wrap svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+  .score-circle-bg { fill: none; stroke: var(--panel2); stroke-width: 12; }
+  .score-circle-fg { fill: none; stroke: var(--aqua); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 132; filter: drop-shadow(0 0 8px var(--aqua)); transition: stroke-dashoffset 1.5s ease; }
+  .score-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .score-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: var(--aqua); line-height: 1; text-shadow: 0 0 20px var(--aqua-glow); }
+  .score-sub { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .score-status { display: inline-block; background: rgba(0,229,255,0.15); color: var(--aqua); font-size: 13px; font-weight: 700; padding: 6px 18px; border-radius: 100px; letter-spacing: 1px; text-transform: uppercase; }
+  .credit-factors { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+  .factor-title { font-size: 11px; font-weight: 600; color: var(--aqua); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .factor-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .factor-name { font-size: 13px; color: var(--text); width: 120px; flex-shrink: 0; }
+  .factor-bar { flex: 1; height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden; }
+  .factor-fill { height: 100%; background: linear-gradient(90deg, var(--aqua-dark), var(--aqua)); border-radius: 4px; }
+  .factor-pct { font-size: 12px; color: var(--aqua); font-family: 'Space Mono', monospace; width: 35px; text-align: right; }
+  .credit-info h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(34px, 4vw, 52px); color: var(--white); line-height: 1; margin-bottom: 16px; }
+  .credit-info h2 span { color: var(--aqua); }
+  .credit-info p { font-size: 15px; color: var(--muted); line-height: 1.75; font-weight: 300; margin-bottom: 28px; }
+  .checklist { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text); }
+  .checklist li::before { content: '✦'; color: var(--aqua); font-size: 10px; margin-top: 3px; flex-shrink: 0; }
+
+  /* EDUCATION */
+  #education { background: var(--black); }
+  .education-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .edu-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: all 0.3s; }
+  .edu-card:hover { border-color: var(--aqua-dark); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,229,255,0.06); }
+  .edu-card-header { background: linear-gradient(135deg, var(--panel2), var(--panel)); padding: 28px 28px 20px; border-bottom: 1px solid var(--border); }
+  .edu-tag { font-size: 10px; font-weight: 700; color: var(--aqua); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .edu-card-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); letter-spacing: 1px; margin-bottom: 8px; }
+  .edu-card-header p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .edu-card-body { padding: 24px 28px; }
+  .edu-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .edu-step-num { width: 28px; height: 28px; background: var(--aqua-soft); border: 1px solid var(--aqua-dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--aqua); flex-shrink: 0; font-family: 'Space Mono', monospace; }
+  .edu-step-text h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .edu-step-text p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* APPLY */
+  #apply { background: var(--dark); }
+  .apply-wrap { max-width: 700px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.4); }
+  .apply-header { background: linear-gradient(135deg, var(--aqua-dark), var(--aqua)); padding: 32px 40px; position: relative; overflow: hidden; }
+  .apply-header::after { content: 'APPLY'; position: absolute; right: -10px; top: -20px; font-family: 'Bebas Neue', sans-serif; font-size: 120px; color: rgba(0,0,0,0.1); line-height: 1; pointer-events: none; }
+  .apply-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--black); letter-spacing: 1px; margin-bottom: 4px; }
+  .apply-header p { font-size: 14px; color: rgba(0,0,0,0.65); font-weight: 500; }
+  .apply-body { padding: 40px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-full { grid-column: 1 / -1; }
+  .apply-select { width: 100%; background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; appearance: none; cursor: pointer; transition: border-color 0.2s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300E5FF' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  .apply-select:focus { border-color: var(--aqua); box-shadow: 0 0 0 3px var(--aqua-soft); }
+  .apply-select.error { border-color: var(--error) !important; }
+  .apply-select option { background: var(--panel2); }
+  .apply-submit { width: 100%; background: var(--aqua); color: var(--black); font-weight: 700; font-size: 15px; padding: 16px; border-radius: 12px; border: none; cursor: pointer; margin-top: 8px; transition: all 0.25s; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 24px var(--aqua-glow); font-family: 'Poppins', sans-serif; }
+  .apply-submit:hover { background: var(--aqua-dark); transform: translateY(-2px); }
+  .apply-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .form-notice { font-size: 11px; color: var(--muted); text-align: center; margin-top: 14px; line-height: 1.6; }
+  .success-msg { display: none; text-align: center; padding: 40px; }
+  .success-icon { width: 70px; height: 70px; background: var(--aqua-soft); border: 2px solid var(--aqua); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 0 24px var(--aqua-glow); }
+
+  /* EMAILJS CONFIG BANNER */
+  .config-banner {
+    background: linear-gradient(135deg, #1a0a00, #2a1200);
+    border: 1px solid #FF8C00;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .config-banner-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+  .config-banner h4 { font-size: 14px; font-weight: 700; color: #FF8C00; margin-bottom: 6px; }
+  .config-banner p { font-size: 12px; color: #CC7000; line-height: 1.6; }
+  .config-banner code { background: rgba(255,140,0,0.15); color: #FF8C00; padding: 2px 6px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; }
+
+  /* CONTACT */
+  #contact { background: var(--black); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
+  .contact-info h2 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--white); line-height: 1; margin-bottom: 16px; }
+  .contact-info h2 span { color: var(--aqua); }
+  .contact-info p { font-size: 15px; color: var(--muted); line-height: 1.7; font-weight: 300; margin-bottom: 32px; }
+  .contact-item { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .contact-icon { width: 46px; height: 46px; background: var(--aqua-soft); border: 1px solid var(--aqua-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .contact-detail-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .contact-detail-val { font-size: 15px; color: var(--text); font-weight: 500; margin-top: 2px; }
+  .contact-detail-val a { color: var(--aqua); text-decoration: none; }
+  .contact-form-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 36px; }
+  .contact-form-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); margin-bottom: 24px; letter-spacing: 1px; }
+  textarea.form-input { resize: none; min-height: 110px; font-family: 'Poppins', sans-serif; font-size: 14px; }
+  .send-btn { width: 100%; background: var(--aqua); color: var(--black); font-weight: 700; font-size: 14px; padding: 15px; border-radius: 10px; border: none; cursor: pointer; transition: all 0.25s; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 20px var(--aqua-glow); font-family: 'Poppins', sans-serif; }
+  .send-btn:hover { background: var(--aqua-dark); transform: translateY(-2px); }
+  .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* SPINNER */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.3); border-top-color: var(--black); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FOOTER */
+  footer { background: var(--dark); border-top: 1px solid var(--border); padding: 50px 5% 30px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .footer-brand p { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; margin-top: 14px; max-width: 280px; }
+  .footer-col h4 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--white); margin-bottom: 14px; letter-spacing: 1px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col ul li a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--aqua); }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { font-size: 12px; color: var(--muted); }
+  .footer-bottom span { color: var(--aqua); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--panel); border: 1px solid var(--aqua-dark); color: var(--text); padding: 14px 20px; border-radius: 12px; font-size: 14px; z-index: 9998; transform: translateY(100px); opacity: 0; transition: all 0.3s; box-shadow: 0 8px 32px rgba(0,0,0,0.4); max-width: 320px; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .toast-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.5px; }
+
+  /* WHATSAPP */
+  .wa-fab { position: fixed; bottom: 28px; left: 28px; z-index: 9000; background: #25D366; color: white; width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: all 0.25s; }
+  .wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .hero-visual { display: none; }
+    .calc-body { grid-template-columns: 1fr; }
+    .calc-inputs { border-right: none; border-bottom: 1px solid var(--border); }
+    .credit-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 28px; }
+  }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 52px; }
+    nav { padding: 0 4%; }
+    section { padding: 70px 4%; }
+    .hero { padding: 90px 4% 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WHATSAPP BUTTON -->
+<a href="https://wa.me/27729396959" target="_blank" class="wa-fab" title="Chat on WhatsApp">💬</a>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-m">M</div>
+    <div class="logo-text">MOYAHASETUPFUTURE<span>Student Finance Solutions</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#calculator">Calculator</a></li>
+    <li><a href="#credit">Credit</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#apply" class="nav-cta">Apply Now</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#calculator" onclick="closeMenu()">Calculator</a>
+  <a href="#credit" onclick="closeMenu()">Credit Profile</a>
+  <a href="#education" onclick="closeMenu()">Education</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="#apply" onclick="closeMenu()">Apply Now</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🇿🇦 South African Student Finance</div>
+    <h1>YOUR FUTURE<br><span>STARTS HERE</span></h1>
+    <p>Moyahasetupfuture provides accessible student loans, credit profile building, and financial education tailored for South African students. Don't let money stop your dream.</p>
+    <div class="hero-buttons">
+      <a href="#apply" class="btn-primary">Apply for a Loan ↗</a>
+      <a href="#calculator" class="btn-outline">Loan Calculator</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">R50K+</div><div class="stat-label">Max Loan</div></div>
+      <div><div class="stat-num">24H</div><div class="stat-label">Approval</div></div>
+      <div><div class="stat-num">0%</div><div class="stat-label">Hidden Fees</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="float-card">
+      <div class="float-card-title">Loan Eligibility Snapshot</div>
+      <div class="mini-bar"><span class="mini-bar-label">Registration</span><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><span class="mini-bar-val">92%</span></div>
+      <div class="mini-bar"><span class="mini-bar-label">Books & Study</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span class="mini-bar-val">85%</span></div>
+      <div class="mini-bar"><span class="mini-bar-label">Accommodation</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span class="mini-bar-val">78%</span></div>
+      <div class="mini-bar"><span class="mini-bar-label">Living Costs</span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><span class="mini-bar-val">70%</span></div>
+      <div style="border-top:1px solid var(--border); margin-top:16px; padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:12px; color:var(--muted)">Avg. Approval Rate</span>
+        <span style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--aqua); text-shadow: 0 0 14px var(--aqua-glow)">87%</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <div class="section-tag">What We Offer</div>
+    <h2>BUILT FOR STUDENTS</h2>
+    <p>Simple, transparent financial products designed for South African students at every level of their education journey.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-icon">🎓</div><h3>Student Loans</h3><p>From registration fees to textbooks and accommodation — we cover the full cost of your studies with flexible repayment plans that start after you graduate.</p><a href="#apply" class="service-link">Apply Now →</a></div>
+    <div class="service-card"><div class="service-icon">📊</div><h3>Credit Profile</h3><p>Build a strong credit history from day one. Our credit profiling service helps you understand and improve your TransUnion and Experian credit score.</p><a href="#credit" class="service-link">Learn More →</a></div>
+    <div class="service-card"><div class="service-icon">🧮</div><h3>Loan Calculator</h3><p>Use our smart calculator to know exactly how much you'll repay, what your monthly instalments will be, and total interest — zero surprises.</p><a href="#calculator" class="service-link">Calculate Now →</a></div>
+    <div class="service-card"><div class="service-icon">📚</div><h3>Credit Education</h3><p>Free financial literacy modules covering budgeting, debt management, NCA rights, and building a future-proof financial foundation as a South African student.</p><a href="#education" class="service-link">Start Learning →</a></div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator">
+  <div class="section-header">
+    <div class="section-tag">Financial Planning</div>
+    <h2>LOAN CALCULATOR</h2>
+    <p>Find your monthly repayment in seconds. Transparent figures — no hidden charges.</p>
+  </div>
+  <div class="calc-wrap">
+    <div class="calc-header">
+      <div class="calc-header-icon">🧮</div>
+      <div class="calc-header-text"><h3>SMART LOAN CALCULATOR</h3><p>Adjust the sliders to match your needs and see live repayment projections</p></div>
+    </div>
+    <div class="calc-body">
+      <div class="calc-inputs">
+        <div class="form-group">
+          <label class="form-label">Loan Amount (ZAR)</label>
+          <input type="text" class="form-input" id="loanAmount" value="R 15,000" readonly>
+          <div><input type="range" id="amountSlider" min="1000" max="50000" step="500" value="15000" oninput="updateCalc()"><div class="range-labels"><span>R1,000</span><span>R50,000</span></div></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Repayment Period</label>
+          <input type="text" class="form-input" id="loanTerm" value="12 Months" readonly>
+          <div><input type="range" id="termSlider" min="6" max="60" step="6" value="12" oninput="updateCalc()"><div class="range-labels"><span>6 Mo</span><span>60 Mo</span></div></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Interest Rate (Annual)</label>
+          <input type="text" class="form-input" id="loanRate" value="12.5%" readonly>
+          <div><input type="range" id="rateSlider" min="5" max="30" step="0.5" value="12.5" oninput="updateCalc()"><div class="range-labels"><span>5%</span><span>30%</span></div></div>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div class="result-card"><div class="result-main" id="monthlyResult">R 1,340</div><div class="result-label">Monthly Instalment</div></div>
+        <div class="result-row"><span class="result-row-label">Loan Principal</span><span class="result-row-val" id="principalVal">R 15,000</span></div>
+        <div class="result-row"><span class="result-row-label">Total Interest</span><span class="result-row-val" id="interestVal">R 1,083</span></div>
+        <div class="result-row"><span class="result-row-label">Total Repayment</span><span class="result-row-val" id="totalVal">R 16,083</span></div>
+        <div class="result-row"><span class="result-row-label">Term</span><span class="result-row-val" id="termVal">12 Months</span></div>
+        <button class="calc-btn" onclick="window.location.href='#apply'">Apply for This Loan →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDIT -->
+<section id="credit">
+  <div class="section-header">
+    <div class="section-tag">Build Your Financial Identity</div>
+    <h2>CREDIT PROFILE</h2>
+    <p>Your credit score is your financial passport. Let us help you build one from scratch or repair a damaged profile.</p>
+  </div>
+  <div class="credit-grid">
+    <div class="credit-visual">
+      <div class="score-meter">
+        <div class="score-circle-wrap">
+          <svg viewBox="0 0 160 160"><circle class="score-circle-bg" cx="80" cy="80" r="70"/><circle class="score-circle-fg" cx="80" cy="80" r="70"/></svg>
+          <div class="score-center"><div class="score-num">700</div><div class="score-sub">Score</div></div>
+        </div>
+        <div class="score-status">Good Standing</div>
+      </div>
+      <div class="credit-factors">
+        <div class="factor-title">Score Factors</div>
+        <div class="factor-row"><span class="factor-name">Payment History</span><div class="factor-bar"><div class="factor-fill" style="width:85%"></div></div><span class="factor-pct">85%</span></div>
+        <div class="factor-row"><span class="factor-name">Credit Usage</span><div class="factor-bar"><div class="factor-fill" style="width:62%"></div></div><span class="factor-pct">62%</span></div>
+        <div class="factor-row"><span class="factor-name">Credit Age</span><div class="factor-bar"><div class="factor-fill" style="width:45%"></div></div><span class="factor-pct">45%</span></div>
+        <div class="factor-row"><span class="factor-name">Account Mix</span><div class="factor-bar"><div class="factor-fill" style="width:70%"></div></div><span class="factor-pct">70%</span></div>
+      </div>
+    </div>
+    <div class="credit-info">
+      <h2>KNOW YOUR SCORE.<br><span>OWN YOUR FUTURE.</span></h2>
+      <p>As a student in South Africa, your credit profile determines your access to financial products. We help you build a solid credit history from the very start of your student journey.</p>
+      <ul class="checklist">
+        <li>Free TransUnion & Experian credit report review</li>
+        <li>Step-by-step credit score improvement plan</li>
+        <li>Dispute incorrect or fraudulent entries on your profile</li>
+        <li>Monthly monitoring and real-time alerts</li>
+        <li>NCA-compliant advice tailored to SA consumers</li>
+        <li>Build credit history even with no prior credit record</li>
+      </ul>
+      <a href="#apply" class="btn-primary">Start My Credit Journey ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header">
+    <div class="section-tag">Financial Literacy</div>
+    <h2>CREDIT EDUCATION</h2>
+    <p>Free knowledge to help you make smart money decisions throughout your studies and beyond.</p>
+  </div>
+  <div class="education-grid">
+    <div class="edu-card">
+      <div class="edu-card-header"><div class="edu-tag">Module 01 — Basics</div><h3>Understanding Student Loans in SA</h3><p>Everything about NSFAS, ISFAP, and private student loans in South Africa.</p></div>
+      <div class="edu-card-body">
+        <div class="edu-step"><div class="edu-step-num">01</div><div class="edu-step-text"><h4>Types of Student Finance</h4><p>NSFAS, bursaries, bank loans, and private lenders — know the difference.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">02</div><div class="edu-step-text"><h4>Interest & Repayment Rules</h4><p>How repo rate affects your student loan interest in South Africa.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">03</div><div class="edu-step-text"><h4>Your NCA Rights</h4><p>The National Credit Act protects you — learn how to use it.</p></div></div>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-card-header"><div class="edu-tag">Module 02 — Budgeting</div><h3>Student Budgeting on a Bursary</h3><p>Practical budgeting tools for students living on a stipend or bursary allowance.</p></div>
+      <div class="edu-card-body">
+        <div class="edu-step"><div class="edu-step-num">01</div><div class="edu-step-text"><h4>The 50/30/20 Rule</h4><p>Allocate needs, wants, and savings from your monthly allowance.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">02</div><div class="edu-step-text"><h4>Avoid Predatory Lenders</h4><p>How to identify loan sharks and illegal credit providers targeting students.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">03</div><div class="edu-step-text"><h4>Emergency Fund Basics</h4><p>Build a small safety net even while studying full-time.</p></div></div>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-card-header"><div class="edu-tag">Module 03 — Credit</div><h3>Building Credit as a First-Timer</h3><p>How to start building a credit record from R0 and no credit history.</p></div>
+      <div class="edu-card-body">
+        <div class="edu-step"><div class="edu-step-num">01</div><div class="edu-step-text"><h4>Getting Your First Credit Product</h4><p>Store accounts, secured credit cards, and student credit facilities.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">02</div><div class="edu-step-text"><h4>Credit Score Ranges in SA</h4><p>Understand what 300–850 means on a South African credit report.</p></div></div>
+        <div class="edu-step"><div class="edu-step-num">03</div><div class="edu-step-text"><h4>Good Debt vs Bad Debt</h4><p>Not all debt is created equal — learn which debt builds your future.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section id="apply">
+  <div class="section-header">
+    <div class="section-tag">Get Funded</div>
+    <h2>APPLY FOR A LOAN</h2>
+    <p>Quick 2-minute application. A consultant will contact you within 24 hours.</p>
+  </div>
+  <div class="apply-wrap">
+    <div class="apply-header">
+      <h2>LOAN APPLICATION</h2>
+      <p>All information is handled securely and in compliance with POPIA & NCA regulations.</p>
+    </div>
+    <div class="apply-body" id="applyForm">
+      <!-- CONFIG BANNER -->
+      <div class="config-banner" id="applyConfigBanner">
+        <div class="config-banner-icon">⚙️</div>
+        <div>
+          <h4>Setup Required — EmailJS</h4>
+          <p>To receive applications by email, replace the placeholders in the script at the bottom of this file:<br>
+          <code>YOUR_PUBLIC_KEY</code> → your EmailJS public key<br>
+          <code>YOUR_SERVICE_ID</code> → your EmailJS service ID<br>
+          <code>YOUR_APPLICATION_TEMPLATE_ID</code> → your template ID<br>
+          See the step-by-step guide below the footer.</p>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="firstName" placeholder="e.g. Sipho"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="lastName" placeholder="e.g. Ndlovu"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="appEmail" placeholder="student@email.com"></div>
+        <div class="form-group"><label class="form-label">Cell Number</label><input type="tel" class="form-input" id="appPhone" placeholder="072 000 0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Institution</label><input type="text" class="form-input" id="appInstitution" placeholder="e.g. University of Johannesburg"></div>
+        <div class="form-group"><label class="form-label">Study Year</label>
+          <select class="apply-select" id="appYear">
+            <option value="" disabled selected>Select Year</option>
+            <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>Postgraduate</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Loan Amount Needed</label>
+          <select class="apply-select" id="appAmount">
+            <option value="" disabled selected>Select Amount</option>
+            <option>R1,000 – R5,000</option><option>R5,000 – R10,000</option><option>R10,000 – R20,000</option><option>R20,000 – R35,000</option><option>R35,000 – R50,000</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Loan Purpose</label>
+          <select class="apply-select" id="appPurpose">
+            <option value="" disabled selected>Select Purpose</option>
+            <option>Registration / Tuition Fees</option><option>Textbooks & Stationery</option><option>Accommodation</option><option>Living Expenses</option><option>Laptop / Equipment</option><option>All of the above</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-full"><label class="form-label">SA ID Number</label><input type="text" class="form-input" id="appId" placeholder="South African ID (13 digits)" maxlength="13"></div>
+      </div>
+      <button class="apply-submit" id="applyBtn" onclick="submitApplication()">Submit Application →</button>
+      <p class="form-notice">By submitting you agree to our Terms & Conditions and consent to processing your personal information under POPIA. We are a registered Credit Provider under the NCA.</p>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div class="success-icon">✓</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--white); margin-bottom:10px; letter-spacing:1px;">APPLICATION RECEIVED!</h3>
+      <p style="color:var(--muted); font-size:15px; max-width:400px; margin:0 auto 20px; line-height:1.7;">Thank you! A consultant will contact you within <strong style="color:var(--aqua)">24 hours</strong>. Check your email and WhatsApp for updates.</p>
+      <a href="https://wa.me/27729396959" class="btn-primary" style="margin:0 auto; display:inline-flex;">💬 Chat on WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <div class="section-tag">Get In Touch</div>
+    <h2>CONTACT US</h2>
+    <p>We're here to help South African students succeed. Reach out anytime.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h2>LET'S TALK<br><span>ABOUT YOUR FUTURE</span></h2>
+      <p>Whether you have questions about your loan application, credit profile, or just need financial advice — our team is ready to assist you.</p>
+      <div class="contact-item"><div class="contact-icon">📞</div><div><div class="contact-detail-label">Phone / WhatsApp</div><div class="contact-detail-val"><a href="tel:0729396959">072 939 6959</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon">✉️</div><div><div class="contact-detail-label">Email</div><div class="contact-detail-val"><a href="mailto:Moyahasetupfuture@gmail.com">Moyahasetupfuture@gmail.com</a></div></div></div>
+      <div class="contact-item"><div class="contact-icon">🕐</div><div><div class="contact-detail-label">Office Hours</div><div class="contact-detail-val">Mon – Fri: 08:00 – 17:00 SAST</div></div></div>
+      <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-detail-label">Service Area</div><div class="contact-detail-val">All 9 Provinces, South Africa</div></div></div>
+    </div>
+    <div class="contact-form-wrap">
+      <div class="contact-form-title">SEND US A MESSAGE</div>
+      <!-- CONFIG BANNER -->
+      <div class="config-banner" id="contactConfigBanner">
+        <div class="config-banner-icon">⚙️</div>
+        <div>
+          <h4>Setup Required — EmailJS</h4>
+          <p>Replace <code>YOUR_CONTACT_TEMPLATE_ID</code> in the script to activate this form. See guide below the footer.</p>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="contactName" placeholder="Your full name"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="contactEmail" placeholder="your@email.com"></div>
+      <div class="form-group"><label class="form-label">Cell / WhatsApp</label><input type="tel" class="form-input" id="contactPhone" placeholder="072 000 0000"></div>
+      <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-input" id="contactSubject" placeholder="How can we help?"></div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" id="contactMsg" placeholder="Tell us about your situation..."></textarea></div>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo"><div class="logo-m">M</div><div class="logo-text" style="font-size:16px;">MOYAHASETUPFUTURE<span>Student Finance Solutions</span></div></a>
+      <p>Empowering South African students with accessible loans, credit education, and financial tools to build a better future.</p>
+    </div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="#services">Student Loans</a></li><li><a href="#credit">Credit Profile</a></li><li><a href="#calculator">Loan Calculator</a></li><li><a href="#education">Credit Education</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="#services">About Us</a></li><li><a href="#apply">Apply Now</a></li><li><a href="#contact">Contact</a></li><li><a href="#">FAQ</a></li></ul></div>
+    <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms & Conditions</a></li><li><a href="#">NCA Compliance</a></li><li><a href="#">POPIA Notice</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <span>Moyahasetupfuture</span>. Registered Credit Provider. NCA compliant.</p>
+    <p>✉️ <span>Moyahasetupfuture@gmail.com</span> &nbsp;|&nbsp; 📞 <span>072 939 6959</span></p>
+  </div>
+</footer>
+
+<!-- EMAILJS SETUP GUIDE -->
+<div style="background:#0a0d10; border-top:1px solid #00E5FF22; padding:50px 5%;">
+  <div style="max-width:700px; margin:0 auto;">
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:36px; color:#00E5FF; margin-bottom:8px; letter-spacing:1px;">⚙️ EMAILJS SETUP GUIDE</div>
+    <p style="color:#7A9BAA; font-size:14px; margin-bottom:32px; line-height:1.7;">Follow these steps once and both forms will send real emails to <strong style="color:#E8F4F8">Moyahasetupfuture@gmail.com</strong></p>
+
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div style="background:#111820; border:1px solid #00E5FF22; border-radius:14px; padding:24px;">
+        <div style="font-size:11px; font-weight:700; color:#00E5FF; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Step 1 — Create Account</div>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7;">Go to <a href="https://www.emailjs.com" target="_blank" style="color:#00E5FF;">emailjs.com</a> → Sign Up for free (200 emails/month free tier).</p>
+      </div>
+      <div style="background:#111820; border:1px solid #00E5FF22; border-radius:14px; padding:24px;">
+        <div style="font-size:11px; font-weight:700; color:#00E5FF; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Step 2 — Add Email Service</div>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7;">In your EmailJS dashboard → <strong style="color:#E8F4F8">Email Services</strong> → <strong style="color:#E8F4F8">Add New Service</strong> → Choose <strong style="color:#E8F4F8">Gmail</strong> → Connect <code style="background:rgba(0,229,255,0.1); color:#00E5FF; padding:2px 6px; border-radius:4px; font-size:11px;">Moyahasetupfuture@gmail.com</code> → Note your <strong style="color:#E8F4F8">Service ID</strong>.</p>
+      </div>
+      <div style="background:#111820; border:1px solid #00E5FF22; border-radius:14px; padding:24px;">
+        <div style="font-size:11px; font-weight:700; color:#00E5FF; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Step 3 — Create Two Email Templates</div>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7; margin-bottom:12px;"><strong style="color:#E8F4F8">Template 1 (Loan Application)</strong> — Note the Template ID. Add these variables to your template body:</p>
+        <code style="display:block; background:rgba(0,229,255,0.06); border:1px solid #00E5FF22; border-radius:8px; padding:14px; font-size:12px; color:#00E5FF; line-height:2; font-family:'Space Mono',monospace;">
+          {{from_name}} · {{from_email}} · {{phone}}<br>
+          Institution: {{institution}} · Year: {{study_year}}<br>
+          Amount: {{loan_amount}} · Purpose: {{loan_purpose}}<br>
+          ID: {{id_number}}
+        </code>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7; margin-top:12px;"><strong style="color:#E8F4F8">Template 2 (Contact Message)</strong> — Note the Template ID. Variables:</p>
+        <code style="display:block; background:rgba(0,229,255,0.06); border:1px solid #00E5FF22; border-radius:8px; padding:14px; font-size:12px; color:#00E5FF; line-height:2; font-family:'Space Mono',monospace;">
+          {{from_name}} · {{from_email}} · {{phone}}<br>
+          Subject: {{subject}}<br>
+          Message: {{message}}
+        </code>
+      </div>
+      <div style="background:#111820; border:1px solid #00E5FF22; border-radius:14px; padding:24px;">
+        <div style="font-size:11px; font-weight:700; color:#00E5FF; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Step 4 — Get Your Public Key</div>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7;">In EmailJS dashboard → <strong style="color:#E8F4F8">Account</strong> → <strong style="color:#E8F4F8">General</strong> → copy your <strong style="color:#E8F4F8">Public Key</strong>.</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#0D1A10,#0F2012); border:1px solid rgba(0,229,100,0.3); border-radius:14px; padding:24px;">
+        <div style="font-size:11px; font-weight:700; color:#00E564; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Step 5 — Update This File</div>
+        <p style="font-size:13px; color:#7A9BAA; line-height:1.7; margin-bottom:10px;">Open this HTML file in a text editor (Notepad, VS Code) and find these lines near the bottom and replace the placeholders:</p>
+        <code style="display:block; background:rgba(0,229,100,0.06); border:1px solid rgba(0,229,100,0.2); border-radius:8px; padding:14px; font-size:12px; color:#00E564; line-height:2; font-family:'Space Mono',monospace;">
+          const PUBLIC_KEY = "YOUR_PUBLIC_KEY";<br>
+          const SERVICE_ID = "YOUR_SERVICE_ID";<br>
+          const APP_TEMPLATE_ID = "YOUR_APPLICATION_TEMPLATE_ID";<br>
+          const CONTACT_TEMPLATE_ID = "YOUR_CONTACT_TEMPLATE_ID";
+        </code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">Success</div>
+  <div id="toastMsg">Done!</div>
+</div>
+
+<script>
+  // ============================================================
+  // EMAILJS CONFIGURATION — REPLACE THESE 4 VALUES
+  // ============================================================
+  const PUBLIC_KEY            = "YOUR_PUBLIC_KEY";
+  const SERVICE_ID            = "YOUR_SERVICE_ID";
+  const APP_TEMPLATE_ID       = "YOUR_APPLICATION_TEMPLATE_ID";
+  const CONTACT_TEMPLATE_ID   = "YOUR_CONTACT_TEMPLATE_ID";
+  // ============================================================
+
+  const configured = !PUBLIC_KEY.includes("YOUR_");
+
+  (function() {
+    if (configured) {
+      emailjs.init({ publicKey: PUBLIC_KEY });
+      document.getElementById('applyConfigBanner').style.display  = 'none';
+      document.getElementById('contactConfigBanner').style.display = 'none';
+    }
+  })();
+
+  /* MOBILE MENU */
+  function toggleMenu() {
+    const m = document.getElementById('mobileMenu');
+    m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+  }
+  function closeMenu() { document.getElementById('mobileMenu').style.display = 'none'; }
+
+  /* CALCULATOR */
+  function updateCalc() {
+    const amount = parseFloat(document.getElementById('amountSlider').value);
+    const months = parseInt(document.getElementById('termSlider').value);
+    const annualRate = parseFloat(document.getElementById('rateSlider').value);
+    const mr = annualRate / 100 / 12;
+    const monthly = mr === 0 ? amount / months : amount * mr * Math.pow(1+mr,months) / (Math.pow(1+mr,months)-1);
+    const total = monthly * months;
+    const interest = total - amount;
+    document.getElementById('loanAmount').value   = 'R ' + amount.toLocaleString('en-ZA');
+    document.getElementById('loanTerm').value     = months + ' Months';
+    document.getElementById('loanRate').value     = annualRate + '%';
+    document.getElementById('monthlyResult').textContent = 'R ' + monthly.toLocaleString('en-ZA',{maximumFractionDigits:0});
+    document.getElementById('principalVal').textContent  = 'R ' + amount.toLocaleString('en-ZA');
+    document.getElementById('interestVal').textContent   = 'R ' + interest.toLocaleString('en-ZA',{maximumFractionDigits:0});
+    document.getElementById('totalVal').textContent      = 'R ' + total.toLocaleString('en-ZA',{maximumFractionDigits:0});
+    document.getElementById('termVal').textContent       = months + ' Months';
+  }
+  updateCalc();
+
+  /* VALIDATION HELPER */
+  function validate(fields, selects) {
+    let ok = true;
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value.trim()) { el.classList.add('error'); ok = false; }
+      else el.classList.remove('error');
+    });
+    (selects||[]).forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value) { el.classList.add('error'); ok = false; }
+      else el.classList.remove('error');
+    });
+    return ok;
+  }
+
+  /* LOAN APPLICATION */
+  async function submitApplication() {
+    const ok = validate(
+      ['firstName','lastName','appEmail','appPhone','appInstitution','appId'],
+      ['appYear','appAmount','appPurpose']
+    );
+    if (!ok) { showToast('Missing Fields', 'Please fill in all required fields.', true); return; }
+
+    if (!configured) {
+      showToast('Not Configured', 'Replace the EmailJS placeholders in the script to send real emails.', true);
+      return;
+    }
+
+    const btn = document.getElementById('applyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+    const params = {
+      from_name:     document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+      from_email:    document.getElementById('appEmail').value,
+      phone:         document.getElementById('appPhone').value,
+      institution:   document.getElementById('appInstitution').value,
+      study_year:    document.getElementById('appYear').value,
+      loan_amount:   document.getElementById('appAmount').value,
+      loan_purpose:  document.getElementById('appPurpose').value,
+      id_number:     document.getElementById('appId').value,
+      to_email:      'Moyahasetupfuture@gmail.com'
+    };
+
+    try {
+      await emailjs.send(SERVICE_ID, APP_TEMPLATE_ID, params);
+      document.getElementById('applyForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      showToast('Application Submitted!', 'We will contact you within 24 hours.');
+    } catch(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Submit Application →';
+      showToast('Send Failed', 'Error: ' + (err.text || 'Please try again.'), true);
+    }
+  }
+
+  /* CONTACT FORM */
+  async function sendMessage() {
+    const ok = validate(['contactName','contactEmail','contactMsg']);
+    if (!ok) { showToast('Missing Fields', 'Please fill your name, email, and message.', true); return; }
+
+    if (!configured) {
+      showToast('Not Configured', 'Replace the EmailJS placeholders in the script to send real emails.', true);
+      return;
+    }
+
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+    const params = {
+      from_name:  document.getElementById('contactName').value,
+      from_email: document.getElementById('contactEmail').value,
+      phone:      document.getElementById('contactPhone').value || 'Not provided',
+      subject:    document.getElementById('contactSubject').value || 'General Enquiry',
+      message:    document.getElementById('contactMsg').value,
+      to_email:   'Moyahasetupfuture@gmail.com'
+    };
+
+    try {
+      await emailjs.send(SERVICE_ID, CONTACT_TEMPLATE_ID, params);
+      ['contactName','contactEmail','contactPhone','contactSubject','contactMsg'].forEach(id => document.getElementById(id).value = '');
+      btn.disabled = false;
+      btn.innerHTML = 'Send Message →';
+      showToast('Message Sent! ✓', 'We\'ll reply to ' + params.from_email + ' shortly.');
+    } catch(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Send Message →';
+      showToast('Send Failed', 'Error: ' + (err.text || 'Please try again.'), true);
+    }
+  }
+
+  /* TOAST */
+  let toastTimer;
+  function showToast(title, msg, isError = false) {
+    clearTimeout(toastTimer);
+    const t = document.getElementById('toast');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent   = msg;
+    t.style.borderColor = isError ? '#FF4466' : 'var(--aqua-dark)';
+    document.getElementById('toastTitle').style.color = isError ? '#FF4466' : 'var(--aqua)';
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 5000);
+  }
+
+  /* SCROLL ANIMATIONS */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.service-card, .edu-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
